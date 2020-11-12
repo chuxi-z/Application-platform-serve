@@ -78,12 +78,33 @@ router.post("/update", function (req, res) {
     }
     else{
       const {_id, username, type} = olduser
-      const data = Object.assign({_id, username, type}, user)
+      const data = Object.assign(user, {_id, username, type})
       res.send({code: 0, data})
     }
 
   })
 
+})
+
+
+
+router.get("/user", function (req, res) {
+  const userid = req.cookies.userid
+  if(!userid){
+    res.send({code: 1, msg: 'Please login first...'})
+  }
+
+  UserModel.findOne({_id: userid}, filter, function (error, user){
+    res.send({code: 0, data: user})
+  })
+})
+
+
+router.get("/userlist", function (req, res) {
+  const {type} = req.query
+  UserModel.find({type}, filter, function (error, users){
+    res.send({code: 0, data: users})
+  })
 })
 
 
